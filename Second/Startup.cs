@@ -30,8 +30,7 @@ namespace Second
 			services.AddControllers();
 			services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "Second", Version = "v1" }); });
 
-			services.AddScoped<IFirstClient, FirstClient>();
-            services.Configure<FirstConfiguration>(Configuration.GetSection("First"));
+			services.AddSecondServices(Configuration);
         }
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,4 +52,13 @@ namespace Second
 			app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 		}
 	}
+
+    public static class ServiceCollectionExtensions
+    {
+        public static void AddSecondServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddScoped<IFirstClient, FirstClient>();
+            services.Configure<FirstConfiguration>(configuration.GetSection("First"));
+		}
+    }
 }

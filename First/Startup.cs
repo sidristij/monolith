@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using First.Services;
 using Microsoft.AspNetCore.Builder;
@@ -31,7 +32,7 @@ namespace First
 			services.AddControllers();
 			services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "First", Version = "v1" }); });
 
-            services.AddScoped<IFirstWeatherService, FirstWeatherService>();
+            services.AddFirstServices();
         }
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,4 +54,13 @@ namespace First
 			app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 		}
 	}
+
+    public static class ServiceCollectionExtensions
+	{
+        public static void AddFirstServices(this IServiceCollection services)
+        {
+            services.AddScoped<IFirstWeatherService, FirstWeatherService>();
+		}
+
+    }
 }
