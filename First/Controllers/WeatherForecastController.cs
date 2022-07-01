@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using First.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace First.Controllers
 {
@@ -11,29 +9,17 @@ namespace First.Controllers
 	[Route("[controller]")]
 	public class WeatherForecastController : ControllerBase
 	{
-		private static readonly string[] Summaries = new[]
-		{
-			"Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-		};
+        private readonly IFirstWeatherService _weatherService;
 
-		private readonly ILogger<WeatherForecastController> _logger;
-
-		public WeatherForecastController(ILogger<WeatherForecastController> logger)
-		{
-			_logger = logger;
-		}
+        public WeatherForecastController(IFirstWeatherService weatherService)
+        {
+            _weatherService = weatherService;
+        }
 
 		[HttpGet]
-		public IEnumerable<FirstWeatherForecast> Get()
-		{
-			var rng = new Random();
-			return Enumerable.Range(1, 5).Select(index => new FirstWeatherForecast
-				{
-					Date = DateTime.Now.AddDays(index),
-					TemperatureC = rng.Next(-20, 55),
-					Summary = Summaries[rng.Next(Summaries.Length)]
-				})
-				.ToArray();
-		}
+		public async Task<IEnumerable<FirstWeatherForecast>> Get()
+        {
+            return await _weatherService.GetForecastAsync();
+        }
 	}
 }

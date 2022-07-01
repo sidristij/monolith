@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using First.Services;
 using Joined.ServiceInstance;
+using Joined.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Second.Services;
 
 namespace Joined
 {
@@ -29,7 +32,13 @@ namespace Joined
 						configuration,
 						DaemonNames,
 						args);
-					
+
+					//First Services
+                    services.AddScoped<IFirstWeatherService, FirstWeatherService>();
+
+					//Second services
+                    services.AddScoped<IFirstClient, LocalFirstClient>();
+
 					services.AddHostedService<DaemonBackgroundService<First.Program>>();
 					services.AddHostedService<DaemonBackgroundService<Second.Program>>();
 				})
