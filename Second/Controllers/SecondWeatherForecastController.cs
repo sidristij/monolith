@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Second.Services;
 
 namespace Second.Controllers
 {
@@ -11,20 +11,21 @@ namespace Second.Controllers
 	[Route("[controller]")]
 	public class SecondWeatherForecastController : ControllerBase
 	{
-		private static readonly string[] Summaries = new[]
+        private readonly IFirstClient _firstClient;
+
+        private static readonly string[] Summaries = new[]
 		{
 			"Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 		};
 
-		private readonly ILogger<SecondWeatherForecastController> _logger;
 
-		public SecondWeatherForecastController(ILogger<SecondWeatherForecastController> logger)
-		{
-			_logger = logger;
-		}
+		public SecondWeatherForecastController(IFirstClient firstClient)
+        {
+            _firstClient = firstClient;
+        }
 
 		[HttpGet]
-		public IEnumerable<SecondWeatherForecast> Get()
+		public IEnumerable<SecondWeatherForecast> GetSecond()
 		{
 			var rng = new Random();
 			return Enumerable.Range(1, 5).Select(index => new SecondWeatherForecast
@@ -35,5 +36,11 @@ namespace Second.Controllers
 				})
 				.ToArray();
 		}
-	}
+
+        [HttpGet("first")]
+        public Task<FirstInSecondWeatherForecast[]> GetFirst()
+        {
+            return _firstClient.GetForecastAsync();
+        }
+    }
 }

@@ -4,10 +4,14 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using First;
+using Joined.Services;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Second.Services;
 
 namespace Joined.ServiceInstance
 {
@@ -86,6 +90,11 @@ namespace Joined.ServiceInstance
 				}
 
 				ConfigureDaemonConfiguration(hostBuilder);
+                hostBuilder.ConfigureServices((ctx, services) =>
+                {
+					services.AddFirstServices();
+                    services.AddScoped<IFirstClient, LocalFirstClient>();
+				});
 				var host = hostBuilder.Build();
 
 				try
@@ -170,7 +179,9 @@ namespace Joined.ServiceInstance
 			hostBuilder.ConfigureAppConfiguration((context, builder) =>
 			{
 				builder.Sources.Clear();
-				builder.AddInMemoryCollection(_daemonConfiguration);
+                builder.AddInMemoryCollection(_daemonConfiguration);
+                builder.AddJsonFile("appsettings.json");
+                builder.AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json");
 			});
 		}
 

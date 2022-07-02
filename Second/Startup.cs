@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Second.Services;
 
 namespace Second
 {
@@ -28,7 +29,9 @@ namespace Second
 		{
 			services.AddControllers();
 			services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "Second", Version = "v1" }); });
-		}
+
+			services.AddSecondServices(Configuration);
+        }
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -49,4 +52,13 @@ namespace Second
 			app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 		}
 	}
+
+    public static class ServiceCollectionExtensions
+    {
+        public static void AddSecondServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddScoped<IFirstClient, FirstClient>();
+            services.Configure<FirstConfiguration>(configuration.GetSection("First"));
+		}
+    }
 }

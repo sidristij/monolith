@@ -29,8 +29,8 @@ namespace Joined
 						configuration,
 						DaemonNames,
 						args);
-					
-					services.AddHostedService<DaemonBackgroundService<First.Program>>();
+
+                    services.AddHostedService<DaemonBackgroundService<First.Program>>();
 					services.AddHostedService<DaemonBackgroundService<Second.Program>>();
 				})
 				.ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
