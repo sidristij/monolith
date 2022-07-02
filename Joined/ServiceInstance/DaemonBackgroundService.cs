@@ -179,7 +179,9 @@ namespace Joined.ServiceInstance
 			hostBuilder.ConfigureAppConfiguration((context, builder) =>
 			{
 				builder.Sources.Clear();
-				builder.AddInMemoryCollection(_daemonConfiguration);
+                builder.AddInMemoryCollection(_daemonConfiguration);
+                builder.AddJsonFile("appsettings.json");
+                builder.AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json");
 			});
 		}
 
